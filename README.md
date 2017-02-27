@@ -1,10 +1,10 @@
 Spatula
 ============
 
-A small/modest android library to bind fonts to common android text Views via annotations processing like (lowly) [butterknife][1]. You can easely apply Typefaces on Views that extends 'TextView' like 'android.widget.Button' or 'android.widget.ToggleButton' or that extends android support design 'TextInputLayout'.
+A small/modest android library to bind fonts to common android text Views via annotations processing like (lowly) [butterknife][1]. You can easely apply Typefaces on Views that extends `TextView` like `android.widget.Button` or `android.widget.ToggleButton` or that extends android support design `TextInputLayout`.
 
 
-* Eliminates 'Typeface.createFromAsset' and 'view.setTypeface' by using by using @BindTypeface on fields.
+* Eliminates `Typeface.createFromAsset` and `view.setTypeface` by using by using `@BindTypeface` on fields.
 * Work fine with butterknife fields binding.
 * TypeFace Caching.
 
@@ -44,9 +44,9 @@ dependencies {
 Configuration
 -------
 
-Copy your fonts to the 'assets/fonts/' folder
+Copy your fonts to the `assets/fonts/` folder
 
-Create a new class that implements 'FontMapper'
+Create a new class that implements `FontMapper`
 You have to return the file name for each font if. Do not forget to fill in the file extension!
 
 ```java
@@ -98,16 +98,21 @@ Usage
 -------
 You can anotate your View fields with the '@BindTypeface' annotation.
 
-- '@BindTypeface'
-without font index, the binder use the default font 'FontMapper.regular'.
+```java
+//without font index, the binder use the default font 'FontMapper.regular'.
+@BindTypeface
+TextView textView01;
 
-- '@BindTypeface(FontMapper.bold)' or '@BindTypeface(MyMapper.bold)'
- The binder use the given font.
+// The binder use the given font.
+@BindTypeface(FontMapper.bold) //or '@BindTypeface(MyMapper.bold)'
+TextView textView02;
 
-- '@BindTypeface(MyMapper.myCustomTypeFace)'
- The binder use your custom font name returned by your font mapper implementation. Remember to not use negative values for your custom fields.
+// The binder use your custom font name returned by your font mapper implementation. Remember to not use negative values for your custom fields.
+@BindTypeface(MyMapper.myCustomTypeFace)
+TextView textView03;
+```
 
-Call 'Spatula.(objectToBind)' after any '.findViewById(...)' or 'ButterKnife.bind(this)'.
+Call `Spatula.(objectToBind)` after any `.findViewById(...)` or `ButterKnife.bind(this)`.
 
 Bonux
 -------
