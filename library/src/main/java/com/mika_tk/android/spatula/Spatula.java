@@ -115,7 +115,7 @@ public final class Spatula {
      *               classes or view holder.
      */
     @SuppressWarnings("unused")
-    public static void bindTypefaces(Object parent) {
+    public static void bindTypefaces(@NonNull Object parent) {
         final Field[] fields = parent.getClass().getDeclaredFields();
 
         for (Field field : fields) {
@@ -156,7 +156,7 @@ public final class Spatula {
                 v.setTypeface(type);
             } else if (FontMapper.regular != typefaceIndex) {
                 Log.w(TAG, String.format("Can't locate typeface {%d}. retry with default 'regular' typeface : ", typefaceIndex));
-                applyDefault(v);
+                apply(v);
             }
 
         }
@@ -176,7 +176,7 @@ public final class Spatula {
                 v.setTypeface(type);
             } else if (FontMapper.regular != typefaceIndex) {
                 Log.w(TAG, String.format("Can't locate typeface {%d}. Trying to apply 'regular' typeface : ", typefaceIndex));
-                applyDefault(v);
+                apply(v);
             }
         }
     }
@@ -196,7 +196,7 @@ public final class Spatula {
      *
      * @param v the text view
      */
-    public static void applyDefault(TextView... v) {
+    public static void apply(TextView... v) {
         apply(FontMapper.regular, v);
     }
 
@@ -215,7 +215,7 @@ public final class Spatula {
      *
      * @param v the text view
      */
-    public static void applyDefault(TextInputLayout... v) {
+    public static void apply(TextInputLayout... v) {
         apply(FontMapper.regular, v);
     }
 
@@ -243,7 +243,7 @@ public final class Spatula {
             } catch (RuntimeException e) {
                 typeFace = null;
                 Log.e(TAG, e.getMessage());
-                Log.e(TAG, String.format("{can't applyDefault typeface [%s] not in 'assets}/fonts/' folder", fontName));
+                Log.e(TAG, String.format("{can't apply typeface [%s] not in 'assets}/fonts/' folder", fontName));
             } finally {
                 sTypefacesCacheList.put(fontIndex, typeFace);
             }
