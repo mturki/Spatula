@@ -1,7 +1,8 @@
 Spatula
 ============
 
-A small android library to bind fonts to common android Views via annotations processing like (relatively speaking) butterknife.
+A small/modest android library to bind fonts to common android text Views via annotations processing like (lowly) [butterknife][1]. You can easely apply Typefaces on Views that extends 'TextView' like 'android.widget.Button' or 'android.widget.ToggleButton' or that extends android support design 'TextInputLayout'.
+
 
 * Eliminates 'Typeface.createFromAsset' and 'view.setTypeface' by using by using @BindTypeface on fields.
 * Work fine with butterknife fields binding.
@@ -46,6 +47,7 @@ Configuration
 Copy your fonts to the 'assets/fonts/' folder
 
 Create a new class that implements 'FontMapper'
+You have to return the file name for each font if. Do not forget to fill in the file extension!
 
 ```java
 public class MyFonts implements FontMapper {
@@ -66,6 +68,7 @@ public class MyFonts implements FontMapper {
                 return "HelvNeue55_W1G.ttf";
         }
 ```
+
 In your custom Application class, init the Spatula library :
 ```java
 public class MyApp extends Application {
@@ -73,7 +76,7 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-                TypefaceHelper.with(new MyFonts());
+                Spatula.with(new MyFonts());
     }
 
 }
@@ -93,7 +96,36 @@ Or Add a `meta-data` element to the `AndroidManifest.xml` `application` element 
 
 Usage
 -------
+You can anotate your View fields with the '@BindTypeface' annotation.
 
+- '@BindTypeface'
+without font index, the binder use the default font 'FontMapper.regular'.
+
+- '@BindTypeface(FontMapper.bold)' or '@BindTypeface(MyMapper.bold)'
+ The binder use the given font.
+
+- '@BindTypeface(MyMapper.myCustomTypeFace)'
+ The binder use your custom font name returned by your font mapper implementation. Remember to not use negative values for your custom fields.
+
+Call 'Spatula.(objectToBind)' after any '.findViewById(...)' or 'ButterKnife.bind(this)'.
+
+Bonux
+-------
+You can use some bonus functions to manually apply fonts to your text views:
+
+```java
+// apply font to a TextView
+Spatula.apply(MyMapper.bold, myTextView);
+
+// apply default font to a TextView
+Spatula.apply(myTextView);
+
+// apply font to several views
+Spatula.apply(MyMapper.bold, myTextView01, myTextView02);
+
+// apply default font to several views
+Spatula.apply(myTextView01, myTextView02);
+```
 
 License
 -------
@@ -111,4 +143,6 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+ [1]: http://jakewharton.github.com/butterknife/
 
