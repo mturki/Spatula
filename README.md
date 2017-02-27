@@ -1,5 +1,6 @@
 Spatula
 ============
+[ ![Download](https://api.bintray.com/packages/mturki/android/spatula/images/download.svg) ](https://bintray.com/mturki/android/spatula/_latestVersion)
 
 A small/modest android library to bind fonts to common android text Views via annotations processing like (lowly) [butterknife][1]. You can easely apply Typefaces on Views that extends `TextView` like `android.widget.Button` or `android.widget.ToggleButton` or that extends android support design `TextInputLayout`.
 
@@ -35,9 +36,17 @@ EditText password;
 Download
 --------
 
+Add to your project scope `build.gradle` file (jcenter repository is comming)
+```groovy
+maven {
+        url  "http://dl.bintray.com/mturki/android" 
+    }
+```
+
+Add to your application scope `build.gradle` file
 ```groovy
 dependencies {
-  compile 'TODO'
+  compile 'com.mika_tk.android.spatula:spatula:1.0.0-alpha3'
 }
 ```
 
