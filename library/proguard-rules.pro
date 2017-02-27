@@ -1,25 +1,26 @@
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in /Users/mturki/Library/Android/sdk/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
 
-# Add any project specific keep options here:
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+-keepattributes InnerClasses
+-keepattributes EnclosingMethod
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# typeface annotations
+-keep class com.mika_tk.android.spatula.BindTypeface { *; }
+-keep class com.mika_tk.android.spatula.Spatula { *; }
+-keep class com.mika_tk.android.spatula.FontMapper { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+ # keeps all fields and Constructors with @BindTypeface
+ -keepclassmembers,allowobfuscation class * {
+    @com.mika_tk.android.spatula.BindTypeface <fields>;
+    @com.mika_tk.android.spatula.BindTypeface <init>(...);
+ }
+
+#Pour supprimer les logs lors de la compilation
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+    public static int w(...);
+    public static int e(...);
+    public static int wtf(...);
+}
+
