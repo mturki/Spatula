@@ -4,9 +4,7 @@
 -keepattributes EnclosingMethod
 
 # typeface annotations
--keep class com.mika_tk.android.spatula.BindTypeface { *; }
--keep class com.mika_tk.android.spatula.Spatula { *; }
--keep class com.mika_tk.android.spatula.FontMapper { *; }
+-keep class com.mika_tk.android.spatula.** { *; }
 
  # keeps all fields and Constructors with @BindTypeface
  -keepclassmembers,allowobfuscation class * {
@@ -18,9 +16,9 @@
 -assumenosideeffects class android.util.Log {
     public static int v(...);
     public static int d(...);
-    public static int i(...);
-    public static int w(...);
-    public static int e(...);
+    #public static int i(...);
+    #public static int w(...);
+    #public static int e(...);
     public static int wtf(...);
 }
 

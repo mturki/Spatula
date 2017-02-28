@@ -9,8 +9,8 @@ apply plugin: 'com.android.library'
 def SDK_ARTIFACT_NAME = 'spatula'
 def SDK_GROUP = 'com.mika_tk.android.spatula'
 
-def SDK_VERSION_NAME = "1.0.0-beta1";
-def SDK_VERSION_CODE = 4;
+def SDK_VERSION_NAME = "1.0.0-beta2";
+def SDK_VERSION_CODE = 5;
 
 //maven
 group = SDK_GROUP
