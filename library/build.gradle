@@ -21,7 +21,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 12
+        minSdkVersion 9
         targetSdkVersion 25
         versionName SDK_VERSION_NAME
         versionCode SDK_VERSION_CODE
@@ -32,8 +32,10 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        compileOptions {
+            sourceCompatibility rootProject.ext.sourceCompatibilityVersion
+            targetCompatibility rootProject.ext.targetCompatibilityVersion
+        }
     }
 
     buildTypes {

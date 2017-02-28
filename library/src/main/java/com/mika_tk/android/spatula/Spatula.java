@@ -1,3 +1,20 @@
+/*
+ * Copyright  2017. Mikhaël Turki
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mika_tk.android.spatula;
 
 import android.content.Context;
@@ -14,26 +31,29 @@ import android.widget.TextView;
 
 import java.lang.reflect.Field;
 
+
 /**
  * Created by Mikhael Turki on 04/01/16.
- * Class used to apply Typefaces on View objects that extends {@link TextView} like  {@link TextView}, {@link android.widget.Button}, {@link android.widget.ToggleButton} or extends {@link TextInputLayout}
- * It can be user as an tool class or with annotations like Butterknife. You h
+ * Class used to apply Typefaces on android View objects that extends {@link TextView} like {@link android.widget.Button}, {@link android.widget.ToggleButton} or extends {@link TextInputLayout}
+ * It can be user as tool class or with annotations like Butterknife.
+ *
+ * @see <a href="https://github.com/mturki/Spatula/blob/master/README.md">https://github.com/mturki/Spatula/blob/master/README.md</a> for help.
  */
 public final class Spatula {
 
     private static final String TAG = Spatula.class.getSimpleName();
 
-    private static final String META_DATA = FontMapper.class.getName();
+    private static final String META_DATA = TypefaceMapper.class.getName();
 
     /**
-     * Typeface cache.
+     * Typeface "cache".
      */
     private static SparseArray<Typeface> sTypefacesCacheList = new SparseArray<>(5);
 
     /**
      * The font mapper Ref.
      */
-    private static FontMapper sFontMapper;
+    private static TypefaceMapper sTypefaceMapper;
 
     /**
      * If we tried to initialize  it at least once.
@@ -46,17 +66,17 @@ public final class Spatula {
     }
 
     /**
-     * Set or change the current {@link FontMapper} implementation
+     * Set or change the current {@link TypefaceMapper} implementation
      *
      * @param mapper the font mapper to set
      */
-    public static void with(@NonNull FontMapper mapper) {
-        sFontMapper = mapper;
+    public static void with(@NonNull TypefaceMapper mapper) {
+        sTypefaceMapper = mapper;
         sIsInit = true;
     }
 
     @NonNull
-    private static FontMapper getMapperFromMetaData(@NonNull Context context) throws RuntimeException {
+    private static TypefaceMapper getMapperFromMetaData(@NonNull Context context) throws RuntimeException {
         Bundle bundle = null;
         try {
             ApplicationInfo app = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
@@ -80,7 +100,7 @@ public final class Spatula {
      * @param className the parser module name
      * @return
      */
-    private static FontMapper parseMapper(String className) throws RuntimeException {
+    private static TypefaceMapper parseMapper(String className) throws RuntimeException {
         Class<?> clazz;
         try {
             clazz = Class.forName(className);
@@ -101,10 +121,10 @@ public final class Spatula {
                     e);
         }
 
-        if (!(module instanceof FontMapper)) {
+        if (!(module instanceof TypefaceMapper)) {
             throw new RuntimeException("Expected instanceof FontMapper, but found: " + module);
         }
-        return (FontMapper) module;
+        return (TypefaceMapper) module;
     }
 
     /**
@@ -154,7 +174,7 @@ public final class Spatula {
             if (type != null) {
                 Log.v(TAG, "Apply typeface : " + type.toString());
                 v.setTypeface(type);
-            } else if (FontMapper.regular != typefaceIndex) {
+            } else if (TypefaceMapper.regular != typefaceIndex) {
                 Log.w(TAG, String.format("Can't locate typeface {%d}. retry with default 'regular' typeface : ", typefaceIndex));
                 apply(v);
             }
@@ -174,7 +194,7 @@ public final class Spatula {
             if (type != null) {
                 Log.v(TAG, "Apply typeface : " + type.toString());
                 v.setTypeface(type);
-            } else if (FontMapper.regular != typefaceIndex) {
+            } else if (TypefaceMapper.regular != typefaceIndex) {
                 Log.w(TAG, String.format("Can't locate typeface {%d}. Trying to apply 'regular' typeface : ", typefaceIndex));
                 apply(v);
             }
@@ -183,7 +203,7 @@ public final class Spatula {
 
     /**
      * @param typefaceIndex the typeface index to apply
-     * @param v             collection of textViews to apply to
+     * @param v             collection of {@link TextView} to apply typeface to
      */
     public static void apply(int typefaceIndex, TextView... v) {
         for (TextView textView : v) {
@@ -192,17 +212,17 @@ public final class Spatula {
     }
 
     /**
-     * apply the default typeface {@link FontMapper#regular} the the given {@link TextView}
+     * apply the default typeface {@link TypefaceMapper#regular} the the given {@link TextView}
      *
      * @param v the text view
      */
     public static void apply(TextView... v) {
-        apply(FontMapper.regular, v);
+        apply(TypefaceMapper.regular, v);
     }
 
     /**
      * @param typefaceIndex the typeface index to apply
-     * @param v             collection of textViews to apply to
+     * @param v             collection of {@link TextInputLayout} to apply to
      */
     public static void apply(int typefaceIndex, TextInputLayout... v) {
         for (TextInputLayout textView : v) {
@@ -211,12 +231,12 @@ public final class Spatula {
     }
 
     /**
-     * apply the default typeface {@link FontMapper#regular} the the given {@link TextInputLayout}
+     * Apply the default typeface {@link TypefaceMapper#regular} the the given {@link TextInputLayout}
      *
      * @param v the text view
      */
     public static void apply(TextInputLayout... v) {
-        apply(FontMapper.regular, v);
+        apply(TypefaceMapper.regular, v);
     }
 
     /**
@@ -230,13 +250,13 @@ public final class Spatula {
         Typeface typeFace = sTypefacesCacheList.get(fontIndex);
         if (typeFace != null) {
             return typeFace;
-        } else if (!sIsInit && sFontMapper == null) {
+        } else if (!sIsInit && sTypefaceMapper == null) {
 
             try {
-                //get mapper from meta data if null (just one time);
-                sFontMapper = getMapperFromMetaData(ctx);
+                //get mapper from meta data if null (just once);
+                sTypefaceMapper = getMapperFromMetaData(ctx);
 
-                fontName = sFontMapper.getFontName(fontIndex);
+                fontName = sTypefaceMapper.getTypefaceName(fontIndex);
                 typeFace = Typeface.createFromAsset(ctx.getAssets(), "fonts/" + fontName);
             } catch (NullPointerException e) {
                 Log.e(TAG, String.format("can't apply typeface at [%s] : this font is not defined in your FontMapper implementation.", fontName));
