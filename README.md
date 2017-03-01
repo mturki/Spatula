@@ -60,7 +60,7 @@ Configuration
 1) Copy your fonts to the `assets/fonts/` folder
 
 Create a new class that implements `TypefaceMapper`
-You have to return the file name for each font if. Do not forget to fill in the file extension!
+You have to return the desired file name for each font index. Do not forget to fill in the file extension!
 
 ```java
 public class Font implements TypefaceMapper {
