@@ -97,7 +97,7 @@ Or Add a `meta-data` element to the `AndroidManifest.xml` `application` element 
 <application android:label="@string/app_name" ...>
     ...
         <meta-data
-            android:name="com.mika_tk.android.spatula.FontMapper"
+            android:name="com.mika_tk.android.spatula.Mapper"
             android:value="your.custom.font.mapper.class" />
     ...
 </application>
