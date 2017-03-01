@@ -1,5 +1,9 @@
+
+
 Spatula
 ============
+![Spatula](https://dl.dropboxusercontent.com/u/9715865/spatula.png)
+
 [ ![Download](https://api.bintray.com/packages/mturki/android/spatula/images/download.svg) ](https://bintray.com/mturki/android/spatula/_latestVersion)
 
 A small/modest android library to bind fonts to common android text Views via annotations processing like (lowly) [butterknife][1]. You can easely apply your custom typefaces `.ttf` or `.otf`(not tested) files, contained in your `assets` folder, on text views that extends `TextView` like `android.widget.Button` or `android.widget.ToggleButton` or extends android support design `TextInputLayout`.
