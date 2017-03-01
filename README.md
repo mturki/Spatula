@@ -46,7 +46,7 @@ maven {
 Add to your application scope `build.gradle` file
 ```groovy
 dependencies {
-  compile 'com.mika_tk.android.spatula:spatula:1.0.0-alpha3'
+  compile 'com.mika_tk.android.spatula:spatula:1.0.0-beta4'
 }
 ```
 
