@@ -9,7 +9,7 @@ Spatula
 A small/modest android library to bind fonts to common android text Views via annotations processing like (lowly) [butterknife][1]. You can easely apply your custom typefaces `.ttf` or `.otf`(not tested) files, contained in your `assets` folder, on text views that extends `TextView` like `android.widget.Button` or `android.widget.ToggleButton` or extends android support design `TextInputLayout`.
 
 
-* Eliminates `Typeface.createFromAsset` and `view.setTypeface` by using by using `@BindTypeface` on fields.
+* Eliminates `Typeface.createFromAsset` and `view.setTypeface` by using `@BindTypeface` on fields.
 * TypeFace Caching.
 * Works fine with butterknife fields binding.
 
