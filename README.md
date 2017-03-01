@@ -6,8 +6,8 @@ A small/modest android library to bind fonts to common android text Views via an
 
 
 * Eliminates `Typeface.createFromAsset` and `view.setTypeface` by using by using `@BindTypeface` on fields.
-* Work fine with butterknife fields binding.
 * TypeFace Caching.
+* Works fine with butterknife fields binding.
 
 ```java
 class ExampleActivity extends Activity {
