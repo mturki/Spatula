@@ -34,6 +34,7 @@ import java.lang.reflect.Field;
 
 /**
  * Created by Mikhael Turki on 04/01/16.
+ *
  * Class used to apply Typefaces on android View objects that extends {@link TextView} like {@link android.widget.Button}, {@link android.widget.ToggleButton} or extends {@link TextInputLayout}
  * It can be user as tool class or with annotations like Butterknife.
  * <p>

@@ -37,7 +37,7 @@ public interface TypefaceMapper {
 
     @Retention(SOURCE)
     @IntDef({regular, thin, light, semi_bold, bold, italic})
-    public @interface DefaultIndex {
+    @interface DefaultIndex {
     }
 
     int regular = -1;
