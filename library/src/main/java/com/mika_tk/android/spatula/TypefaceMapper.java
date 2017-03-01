@@ -16,7 +16,13 @@
  */
 package com.mika_tk.android.spatula;
 
+import android.support.annotation.IntDef;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+
+import java.lang.annotation.Retention;
+
+import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
  * Created by mturki on 27/02/2017.
@@ -28,12 +34,18 @@ import android.support.annotation.NonNull;
  */
 @SuppressWarnings("unused")
 public interface TypefaceMapper {
-    int thin = 1;
-    int light = 2;
-    int regular = 3;
-    int semi_bold = 4;
-    int bold = 5;
-    int italic = 6;
+
+    @Retention(SOURCE)
+    @IntDef({regular, thin, light, semi_bold, bold, italic})
+    public @interface DefaultIndex {
+    }
+
+    int regular = -1;
+    int thin = -2;
+    int light = -3;
+    int semi_bold = -4;
+    int bold = -5;
+    int italic = -6;
 
     /**
      * have to return the font file name for the given .
@@ -42,5 +54,5 @@ public interface TypefaceMapper {
      * @return have to return the font file name located in your assets/fonts/. ex. : "HelvNeue75_W1G.ttf"
      */
     @NonNull
-    String getTypefaceName(int typefaceIndex);
+    String getTypefaceName(@IntRange(from = -6, to = 256) int typefaceIndex);
 }

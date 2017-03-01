@@ -36,6 +36,12 @@ import java.lang.reflect.Field;
  * Created by Mikhael Turki on 04/01/16.
  * Class used to apply Typefaces on android View objects that extends {@link TextView} like {@link android.widget.Button}, {@link android.widget.ToggleButton} or extends {@link TextInputLayout}
  * It can be user as tool class or with annotations like Butterknife.
+ * <p>
+ * call {@link #with(TypefaceMapper)} before binding. For example in your {@link android.app.Application} put :
+ * <p>
+ * <meta-data
+ * android:name="com.mika_tk.android.spatula.Mapper"
+ * android:value="your.mapper.implem.class"/>
  *
  * @see <a href="https://github.com/mturki/Spatula/blob/master/README.md">https://github.com/mturki/Spatula/blob/master/README.md</a> for help.
  */
@@ -43,7 +49,10 @@ public final class Spatula {
 
     private static final String TAG = Spatula.class.getSimpleName();
 
-    private static final String META_DATA = TypefaceMapper.class.getName();
+    /**
+     * meta-data String Name. Use it to declare your {@Link #TypefaceMapper} implementation for config.
+     */
+    public static final String META_DATA = "com.mika_tk.android.spatula.Mapper";
 
     /**
      * Typeface "cache".
@@ -60,7 +69,7 @@ public final class Spatula {
      */
     private static boolean sIsInit = false;
 
-    private static final String ERROR_INIT = "you have to declare a meta-data item in manifest to configure the font mapper, or instantiate it at least one time by calling TypefaceHelper.with(...) function";
+    private static final String ERROR_INIT = "you have to declare a meta-data item in manifest to configure the font mapper, or instantiate it at least one time by calling Spatula.with(...) function";
 
     private Spatula() {
     }
@@ -71,6 +80,7 @@ public final class Spatula {
      * @param mapper the font mapper to set
      */
     public static void with(@NonNull TypefaceMapper mapper) {
+        Log.i(TAG, "Spatula init");
         sTypefaceMapper = mapper;
         sIsInit = true;
     }
@@ -84,10 +94,12 @@ public final class Spatula {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+        Log.d(TAG, "meta name = " + META_DATA);
         if (bundle == null || !bundle.containsKey(META_DATA)) {
             throw new IllegalArgumentException(ERROR_INIT);
         }
         String mapperClassName = bundle.getString(META_DATA);
+        Log.d(TAG, "mapperClassName = " + mapperClassName);
         return parseMapper(mapperClassName);
     }
 
@@ -105,6 +117,7 @@ public final class Spatula {
         try {
             clazz = Class.forName(className);
         } catch (ClassNotFoundException e) {
+            Log.e(TAG, e.getMessage());
             throw new IllegalArgumentException("Unable to find FontMapper implementation", e);
         }
 
@@ -113,15 +126,18 @@ public final class Spatula {
         try {
             module = clazz.newInstance();
         } catch (InstantiationException e) {
+            Log.e(TAG, e.getMessage());
             throw new RuntimeException("Unable to instantiate FontMapper implementation for " + clazz,
                     e);
             // These can't be combined until API minimum is 19.
         } catch (IllegalAccessException e) {
+            Log.e(TAG, e.getMessage());
             throw new RuntimeException("Unable to instantiate FontMapper implementation for " + clazz,
                     e);
         }
 
         if (!(module instanceof TypefaceMapper)) {
+            Log.e(TAG, "Expected instanceof FontMapper, but found: ");
             throw new RuntimeException("Expected instanceof FontMapper, but found: " + module);
         }
         return (TypefaceMapper) module;
@@ -170,7 +186,7 @@ public final class Spatula {
      */
     private static void apply(int typefaceIndex, TextInputLayout v) {
         if (v != null && v.getContext() != null) {
-            Typeface type = getTypeFace(v.getContext(), typefaceIndex);
+            Typeface type = getTypeFace(v.getContext().getApplicationContext(), typefaceIndex);
             if (type != null) {
                 Log.v(TAG, "Apply typeface : " + type.toString());
                 v.setTypeface(type);
@@ -190,7 +206,7 @@ public final class Spatula {
      */
     private static void apply(int typefaceIndex, TextView v) {
         if (v != null && v.getContext() != null) {
-            Typeface type = getTypeFace(v.getContext(), typefaceIndex);
+            Typeface type = getTypeFace(v.getContext().getApplicationContext(), typefaceIndex);
             if (type != null) {
                 Log.v(TAG, "Apply typeface : " + type.toString());
                 v.setTypeface(type);
@@ -249,27 +265,37 @@ public final class Spatula {
         String fontName = null;
         Typeface typeFace = sTypefacesCacheList.get(fontIndex);
         if (typeFace != null) {
+            Log.d(TAG, String.format("typeface at %d : retrieved from cache.", fontIndex));
             return typeFace;
         } else if (!sIsInit && sTypefaceMapper == null) {
-
-            try {
-                //get mapper from meta data if null (just once);
-                sTypefaceMapper = getMapperFromMetaData(ctx);
-
-                fontName = sTypefaceMapper.getTypefaceName(fontIndex);
-                typeFace = Typeface.createFromAsset(ctx.getAssets(), "fonts/" + fontName);
-            } catch (NullPointerException e) {
-                Log.e(TAG, String.format("can't apply typeface at [%s] : this font is not defined in your FontMapper implementation.", fontName));
-            } catch (RuntimeException e) {
-                typeFace = null;
-                Log.e(TAG, e.getMessage());
-                Log.e(TAG, String.format("{can't apply typeface [%s] not in 'assets}/fonts/' folder", fontName));
-            } finally {
-                sTypefacesCacheList.put(fontIndex, typeFace);
-            }
-        } else {
+            initFromMetaData(ctx);
+        } else if (sIsInit && sTypefaceMapper == null) {
             Log.e(TAG, ERROR_INIT);
+            return null;
+        }
+
+        try {
+            fontName = sTypefaceMapper.getTypefaceName(fontIndex);
+            Log.i(TAG, "fontName = " + fontName);
+            typeFace = Typeface.createFromAsset(ctx.getAssets(), "fonts/" + fontName);
+            Log.i(TAG, "createFromAsset is OK for " + typeFace.toString());
+        } catch (NullPointerException e) {
+            Log.e(TAG, e.getMessage());
+            Log.e(TAG, String.format("can't apply typeface %s : this font is not defined in your FontMapper implementation.", fontName));
+        } catch (RuntimeException e) {
+            Log.e(TAG, e.getMessage());
+            Log.e(TAG, String.format("can't apply typeface : %s not in 'assets/fonts/' folder", fontName));
+        } finally {
+            Log.i(TAG, "fontName = " + fontName + " added to cache");
+            sTypefacesCacheList.put(fontIndex, typeFace);
         }
         return typeFace;
+    }
+
+    private static void initFromMetaData(Context context) {
+        //get mapper from meta data if null (just once);
+        Log.i(TAG, "Spatula init");
+        sTypefaceMapper = getMapperFromMetaData(context);
+        sIsInit = true;
     }
 }
